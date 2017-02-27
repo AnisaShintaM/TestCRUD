@@ -96,6 +96,11 @@ public class Login extends javax.swing.JFrame {
         ex.setBackground(new java.awt.Color(255, 102, 102));
         ex.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         ex.setText("Exit");
+        ex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exActionPerformed(evt);
+            }
+        });
         getContentPane().add(ex);
         ex.setBounds(160, 200, 80, 30);
 
@@ -235,6 +240,10 @@ public class Login extends javax.swing.JFrame {
         }
     
     }//GEN-LAST:event_inActionPerformed
+
+    private void exActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exActionPerformed
+       dispose();
+    }//GEN-LAST:event_exActionPerformed
 
     /**
      * @param args the command line arguments
