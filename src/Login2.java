@@ -309,7 +309,7 @@ public class Login2 extends javax.swing.JFrame {
         getContentPane().add(jLabel36);
         jLabel36.setBounds(250, 0, 90, 80);
 
-        pack();
+        setBounds(0, 0, 415, 391);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtnamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnamaActionPerformed
@@ -349,7 +349,7 @@ public class Login2 extends javax.swing.JFrame {
             ps.setString(2, txtpass.getText());
             ResultSet result = ps.executeQuery();
             if(result.next()){
-                new frmMain().show();
+                new frmMain().show(); 
                 this.dispose();
             }
             else {
@@ -360,7 +360,6 @@ public class Login2 extends javax.swing.JFrame {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(rootPane, "gagal");
         }
-
     }//GEN-LAST:event_inActionPerformed
 
     /**

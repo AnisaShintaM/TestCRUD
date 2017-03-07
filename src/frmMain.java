@@ -1,10 +1,20 @@
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.util.Date;
+import javax.swing.Action;
+import javax.swing.JTable;
+import javax.swing.Timer;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -17,12 +27,15 @@ import javax.swing.table.DefaultTableModel;
  * @author user
  */
 public class frmMain extends javax.swing.JFrame {
-
+    String nol_jam, nol_menit, nol_detik;
+    
     /**
      * Creates new form frmMain
      */
     public frmMain() {
         initComponents();
+        setTanggal();
+        setJam();
     }
 
     /**
@@ -35,9 +48,9 @@ public class frmMain extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        labeljam = new javax.swing.JLabel();
+        taa = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -57,30 +70,36 @@ public class frmMain extends javax.swing.JFrame {
         b6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         alamat = new javax.swing.JTextArea();
+        b7 = new javax.swing.JLabel();
+        tempat = new javax.swing.JTextField();
+        b8 = new javax.swing.JLabel();
+        Tanggal = new com.toedter.calendar.JDateChooser();
         jPanel2 = new javax.swing.JPanel();
         save = new javax.swing.JButton();
         delete = new javax.swing.JButton();
         clear = new javax.swing.JButton();
         refresh = new javax.swing.JButton();
-        edit = new javax.swing.JButton();
+        print = new javax.swing.JButton();
+        edit1 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/AAEAAQAAAAAAAAb_AAAAJDY3NTk1Y2VmLTlhN2YtNGRlMS05Y2Q2LWZiYmVhNjJlZDNkMA_1.png"))); // NOI18N
+        labeljam.setFont(new java.awt.Font("Tw Cen MT", 1, 18)); // NOI18N
+        getContentPane().add(labeljam);
+        labeljam.setBounds(780, 50, 220, 40);
+
+        taa.setFont(new java.awt.Font("Tw Cen MT", 1, 18)); // NOI18N
+        getContentPane().add(taa);
+        taa.setBounds(780, 20, 220, 40);
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/ASOL_2.png"))); // NOI18N
         jLabel3.setText("jLabel3");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(-20, 0, 980, 150);
-
-        jLabel1.setFont(new java.awt.Font("Swis721 Blk BT", 0, 18)); // NOI18N
-        jLabel1.setText("FORM BIODATA SISWA SMK TELKOM MALANG ");
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(220, 150, 460, 40);
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel2.setText("THE REAL INFORMATIC SCHOOL\n");
-        getContentPane().add(jLabel2);
-        jLabel2.setBounds(310, 170, 240, 40);
+        jLabel3.setBounds(0, 0, 1100, 180);
 
         jPanel5.setBackground(new java.awt.Color(204, 204, 204));
         jPanel5.setLayout(null);
@@ -91,13 +110,13 @@ public class frmMain extends javax.swing.JFrame {
         tabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "NIS", "NamaSiswa", "JenisKelamin", "Kelas", "Email", "Alamat"
+                "NIS", "NamaSiswa", "TempatLahir", "TanggalLahir", "JenisKelamin", "Kelas", "Email", "Alamat"
             }
         ));
         tabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -108,10 +127,10 @@ public class frmMain extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tabel);
 
         jPanel3.add(jScrollPane2);
-        jScrollPane2.setBounds(10, 10, 520, 340);
+        jScrollPane2.setBounds(10, 10, 720, 430);
 
         jPanel5.add(jPanel3);
-        jPanel3.setBounds(350, 130, 540, 360);
+        jPanel3.setBounds(350, 150, 740, 450);
 
         jPanel1.setBackground(new java.awt.Color(255, 0, 0));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ISIAN DATA SISWA", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Traditional Arabic", 1, 12))); // NOI18N
@@ -138,50 +157,66 @@ public class frmMain extends javax.swing.JFrame {
         b3.setFont(new java.awt.Font("Lao UI", 1, 14)); // NOI18N
         b3.setText("Jenis Kelamin");
         jPanel1.add(b3);
-        b3.setBounds(10, 140, 100, 30);
+        b3.setBounds(10, 240, 100, 30);
 
         b4.setFont(new java.awt.Font("Lao UI", 1, 14)); // NOI18N
         b4.setText("Kelas");
         jPanel1.add(b4);
-        b4.setBounds(10, 200, 80, 30);
+        b4.setBounds(10, 290, 80, 30);
 
         kelas.setFont(new java.awt.Font("Sitka Banner", 0, 14)); // NOI18N
         jPanel1.add(kelas);
-        kelas.setBounds(120, 200, 190, 30);
+        kelas.setBounds(120, 290, 190, 30);
 
         b5.setFont(new java.awt.Font("Lao UI", 1, 14)); // NOI18N
         b5.setText("Alamat");
         jPanel1.add(b5);
-        b5.setBounds(10, 300, 80, 30);
+        b5.setBounds(10, 390, 80, 30);
 
         email.setFont(new java.awt.Font("Sitka Banner", 0, 14)); // NOI18N
         jPanel1.add(email);
-        email.setBounds(120, 250, 190, 30);
+        email.setBounds(120, 340, 190, 30);
 
         buttonGroup1.add(laki);
         laki.setText("Laki - Laki");
         jPanel1.add(laki);
-        laki.setBounds(120, 140, 80, 30);
+        laki.setBounds(120, 240, 80, 30);
 
         buttonGroup1.add(perempuan);
         perempuan.setText("Perempuan");
         jPanel1.add(perempuan);
-        perempuan.setBounds(210, 140, 90, 30);
+        perempuan.setBounds(210, 240, 90, 30);
 
         b6.setFont(new java.awt.Font("Lao UI", 1, 14)); // NOI18N
         b6.setText("Email");
         jPanel1.add(b6);
-        b6.setBounds(10, 250, 80, 30);
+        b6.setBounds(10, 340, 80, 30);
 
         alamat.setColumns(20);
         alamat.setRows(5);
         jScrollPane1.setViewportView(alamat);
 
         jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(120, 300, 190, 100);
+        jScrollPane1.setBounds(120, 390, 190, 100);
+
+        b7.setFont(new java.awt.Font("Lao UI", 1, 14)); // NOI18N
+        b7.setText("Tempat Lahir");
+        jPanel1.add(b7);
+        b7.setBounds(10, 140, 110, 30);
+
+        tempat.setFont(new java.awt.Font("Sitka Banner", 0, 14)); // NOI18N
+        jPanel1.add(tempat);
+        tempat.setBounds(120, 140, 190, 30);
+
+        b8.setFont(new java.awt.Font("Lao UI", 1, 14)); // NOI18N
+        b8.setText("Tanggal Lahir");
+        jPanel1.add(b8);
+        b8.setBounds(10, 190, 110, 30);
+        jPanel1.add(Tanggal);
+        Tanggal.setBounds(120, 190, 190, 30);
 
         jPanel5.add(jPanel1);
-        jPanel1.setBounds(10, 70, 320, 420);
+        jPanel1.setBounds(10, 90, 320, 510);
 
         jPanel2.setBackground(new java.awt.Color(153, 0, 0));
         jPanel2.setLayout(null);
@@ -193,7 +228,7 @@ public class frmMain extends javax.swing.JFrame {
             }
         });
         jPanel2.add(save);
-        save.setBounds(20, 10, 90, 30);
+        save.setBounds(10, 10, 110, 30);
 
         delete.setText("Delete");
         delete.addActionListener(new java.awt.event.ActionListener() {
@@ -202,7 +237,7 @@ public class frmMain extends javax.swing.JFrame {
             }
         });
         jPanel2.add(delete);
-        delete.setBounds(120, 10, 90, 30);
+        delete.setBounds(130, 10, 110, 30);
 
         clear.setText("Clear");
         clear.addActionListener(new java.awt.event.ActionListener() {
@@ -211,7 +246,7 @@ public class frmMain extends javax.swing.JFrame {
             }
         });
         jPanel2.add(clear);
-        clear.setBounds(220, 10, 90, 30);
+        clear.setBounds(260, 10, 110, 30);
 
         refresh.setText("Refresh");
         refresh.addActionListener(new java.awt.event.ActionListener() {
@@ -220,48 +255,76 @@ public class frmMain extends javax.swing.JFrame {
             }
         });
         jPanel2.add(refresh);
-        refresh.setBounds(320, 10, 90, 30);
+        refresh.setBounds(380, 10, 110, 30);
 
-        edit.setText("Edit");
-        edit.addActionListener(new java.awt.event.ActionListener() {
+        print.setText("Print");
+        print.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editActionPerformed(evt);
+                printActionPerformed(evt);
             }
         });
-        jPanel2.add(edit);
-        edit.setBounds(420, 10, 90, 30);
+        jPanel2.add(print);
+        print.setBounds(620, 10, 110, 30);
+
+        edit1.setText("Edit");
+        edit1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                edit1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(edit1);
+        edit1.setBounds(500, 10, 110, 30);
 
         jPanel5.add(jPanel2);
-        jPanel2.setBounds(350, 70, 540, 50);
+        jPanel2.setBounds(350, 90, 740, 50);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel2.setText("THE REAL INFORMATIC SCHOOL\n");
+        jPanel5.add(jLabel2);
+        jLabel2.setBounds(420, 50, 240, 40);
+
+        jLabel1.setFont(new java.awt.Font("Swis721 Blk BT", 0, 18)); // NOI18N
+        jLabel1.setText("FORM BIODATA SISWA SMK TELKOM MALANG ");
+        jPanel5.add(jLabel1);
+        jLabel1.setBounds(330, 30, 460, 40);
 
         getContentPane().add(jPanel5);
-        jPanel5.setBounds(0, 150, 900, 520);
+        jPanel5.setBounds(0, 150, 1100, 610);
 
-        pack();
+        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+        getContentPane().add(jPanel4);
+        jPanel4.setBounds(0, 0, 1000, 150);
+
+        setBounds(0, 0, 1113, 801);
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        // TODO add your handling code here:
-        if ("".equals(nonis.getText()) || "".equals(alamat.getText()) || "".equals(kelas.getText()) || "".equals(nama.getText()) || "".equals(email.getText())) {
-            JOptionPane.showMessageDialog(this, "Harap Lengkapi Data", "Error", JOptionPane.WARNING_MESSAGE);
-        } else {
-            String JK = "";
+       SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        String tanggal=dateFormat.format(Tanggal.getDate());
+        if ("".equals(nonis.getText())||"".equals(alamat.getText())||"".equals(kelas.getText())||"".equals(nama.getText())||"".equals(email.getText())||"".equals(tempat.getText())||"".equals(tanggal)) {
+            JOptionPane.showMessageDialog(this, "Harap lengkapi data Anda","Error", JOptionPane.WARNING_MESSAGE);
+            
+        }
+        else{
+            String JK="";
             if (laki.isSelected()) {
-                JK = "L";
-            } else {
-                JK = "P";
+                JK="L";
             }
-            String SQL = "INSERT INTO t_siswa (NIS,NamaSiswa,JenisKelamin,Kelas,Email,Alamat) "
-                    + "VALUES('" + nonis.getText() + "','" + nama.getText() + "','" + JK + "','"
-                    + kelas.getText() + "','" +email.getText() + "','" + alamat.getText()+"')";
-            int status = KoneksiDB.execute(SQL);
-            if (status == 1) {
-                JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan","Sukses",JOptionPane.INFORMATION_MESSAGE);
+            else{
+                JK="P";
+            }
+            String SQL="INSERT INTO t_siswa(NIS,NamaSiswa,TempatLahir,TanggalLahir,JenisKelamin,Kelas,Email,Alamat)"+
+                    "VALUES('"+nonis.getText()+"','"+nama.getText()+"','"+tempat.getText()+"','"+tanggal+"','"+JK+"','"+kelas.getText()+"','"+email.getText()+"','"+alamat.getText()+"')";
+            int status=KoneksiDB.execute(SQL);
+            if (status==1) {
+                JOptionPane.showMessageDialog(this, "Data berhasil disimpan","Sukses",JOptionPane.INFORMATION_MESSAGE);
                 selectData();
-            } else {
-                JOptionPane.showMessageDialog(this, "Data gagal ditambahkan", "Gagal", JOptionPane.WARNING_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Data gagal disimpan","Sukses",JOptionPane.WARNING_MESSAGE);
             }
         }
+    
     }//GEN-LAST:event_saveActionPerformed
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
@@ -289,53 +352,91 @@ public class frmMain extends javax.swing.JFrame {
         buttonGroup1.clearSelection();
         email.setText("");
         alamat.setText("");
+        Tanggal.setDate(null);
+        tempat.setText("");
     }//GEN-LAST:event_clearActionPerformed
 
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
        selectData();
     }//GEN-LAST:event_refreshActionPerformed
 
-    private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
-       if ("".equals(nonis.getText()) || "".equals(alamat.getText()) || "".equals(kelas.getText()) || "".equals(nama.getText()) || "".equals(email.getText())) {
-            JOptionPane.showMessageDialog(this, "Harap Lengkapi Data", "Error", JOptionPane.WARNING_MESSAGE);
-        } else {
-            String JK = "";
-            if (laki.isSelected()) {
-                JK = "L";
-            } else {
-                JK = "P";
-            }
-            String SQL = "UPDATE t_siswa SET "
-                    + "NamaSiswa='"+nama.getText()+"',"+"JenisKelamin='" + JK + "',"
-                    + "Kelas='"+kelas.getText()+"',"+"Email='" + email.getText() + "',"
-                    + "Alamat='" + alamat.getText()+"' "
-                    + "WHERE NIS='"+nonis.getText()+"'";
-            int status = KoneksiDB.execute(SQL);
-            if (status == 1) {
-                JOptionPane.showMessageDialog(this, "Data berhasil diupdate","Sukses",JOptionPane.INFORMATION_MESSAGE);
-                selectData();
-            } else {
-                JOptionPane.showMessageDialog(this, "Data gagal diupdate", "Gagal", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-   
-    }//GEN-LAST:event_editActionPerformed
+    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
+      MessageFormat header = new MessageFormat ("Biodata bla");
+      MessageFormat footer = new MessageFormat ("bla");
+      
+      try {
+          tabel.print(JTable.PrintMode.FIT_WIDTH, header, footer, true, null, true, null);
+      }
+      catch(java.awt.print.PrinterException e) {
+          System.err.format("Cannot Print %s%n", e.getMessage());
+      }
+    }//GEN-LAST:event_printActionPerformed
 
     private void tabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelMouseClicked
-       int baris = tabel.getSelectedRow();
+        int baris = tabel.getSelectedRow();
         if (baris != -1) {
             nonis.setText(tabel.getValueAt(baris, 0).toString());
             nama.setText(tabel.getValueAt(baris, 1).toString());
-            if ("Laki-laki".equals(tabel.getValueAt(baris, 2).toString())) {
-                laki.setSelected(true);
-            } else {
-                perempuan.setSelected(true);
+            tempat.setText(tabel.getValueAt(baris,2).toString());
+            
+            SimpleDateFormat date = new SimpleDateFormat("yyy-MM-dd");
+            Date dateFormat = null;
+            try {
+                dateFormat = date.parse(tabel.getValueAt(baris,3).toString());
+                
+            } catch(ParseException ex){
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE,null,ex);
             }
-            kelas.setText(tabel.getValueAt(baris, 3).toString());
-            email.setText(tabel.getValueAt(baris, 4).toString());
-             alamat.setText(tabel.getValueAt(baris, 5).toString());
+            
+            Tanggal.setDate(dateFormat);
+            String JK = tabel.getValueAt(baris,4).toString();
+            if(JK.equals("Laki-Laki"))
+                laki.setSelected(true);
+            else 
+                perempuan.setSelected(true);
+           
+            kelas.setText(tabel.getValueAt(baris, 5).toString());
+            email.setText(tabel.getValueAt(baris, 6).toString());
+            alamat.setText(tabel.getValueAt(baris, 7).toString());
+             
+             
         }
     }//GEN-LAST:event_tabelMouseClicked
+
+    private void edit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edit1ActionPerformed
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd");
+        String tanggal = dateFormat.format(Tanggal.getDate());
+        int baris = tabel.getSelectedRow();
+            String nis = tabel.getValueAt(baris, 0).toString();
+        if ("".equals(nonis.getText()) || "".equals(alamat.getText()) || "".equals(kelas.getText())||"".equals(nama.getText())||"".equals(tempat.getText())||"".equals(email.getText())||"".equals(tanggal)){
+            
+            JOptionPane.showMessageDialog(this, "Harap Lengkapi Data","Error",JOptionPane.WARNING_MESSAGE);
+        }else{
+            String JK ="";
+            if (laki.isSelected()) {
+                JK = "L";
+            }else{
+                JK = "P";
+            }
+            String SQL ="UPDATE `t_siswa` SET `NIS`='"+nonis.getText()
+                    +"',`NamaSiswa`='"+nama.getText()
+                    +"',`JenisKelamin`='"+JK
+                    +"',`Kelas`='"+kelas.getText()
+                    +"',`Email`='"+email.getText()
+                    +"',`Alamat`='"+alamat.getText()
+                    +"',`TempatLahir`='"+tempat.getText()
+                    +"',`TanggalLahir`='"+tanggal
+                    +"' WHERE NIS='"+nis+"'";
+
+            int status = KoneksiDB.execute(SQL);
+            if (status == 1) {
+                JOptionPane.showMessageDialog(this,"Data berhasil diUpdate","Sukses", JOptionPane.INFORMATION_MESSAGE);
+                selectData();
+            }else{
+                JOptionPane.showMessageDialog(this,"Data gagal diUpdate","Sukses",JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_edit1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -373,6 +474,7 @@ public class frmMain extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser Tanggal;
     private javax.swing.JTextArea alamat;
     private javax.swing.JLabel b1;
     private javax.swing.JLabel b2;
@@ -380,10 +482,12 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JLabel b4;
     private javax.swing.JLabel b5;
     private javax.swing.JLabel b6;
+    private javax.swing.JLabel b7;
+    private javax.swing.JLabel b8;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton clear;
     private javax.swing.JButton delete;
-    private javax.swing.JButton edit;
+    private javax.swing.JButton edit1;
     private javax.swing.JTextField email;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -391,43 +495,91 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField kelas;
+    private javax.swing.JLabel labeljam;
     private javax.swing.JRadioButton laki;
     private javax.swing.JTextField nama;
     private javax.swing.JTextField nonis;
     private javax.swing.JRadioButton perempuan;
+    private javax.swing.JButton print;
     private javax.swing.JButton refresh;
     private javax.swing.JButton save;
+    private javax.swing.JLabel taa;
     private javax.swing.JTable tabel;
+    private javax.swing.JTextField tempat;
     // End of variables declaration//GEN-END:variables
 
     private void selectData() {
-    String kolom[] = {"NIS","Nama Siswa","Jenis Kelamin","Kelas","Email","Alamat"};
-        DefaultTableModel dtm = new DefaultTableModel(null, kolom);
-        String SQL = "SELECT * FROM t_siswa";
-        ResultSet rs = KoneksiDB.executeQuery(SQL);
-        try{
+     String kolom[]={"NIS","NamaSiswa","TempatLahir","TglLahir","JenisKelamin","Kelas","Email","Alamat"};
+        DefaultTableModel dtm=new DefaultTableModel(null, kolom);
+        String SQL="SELECT * FROM t_siswa";
+        ResultSet rs=KoneksiDB.executeQuery(SQL);
+        try {
             while(rs.next()){
-                String NIS = rs.getString(1);
-                String namaSiswa = rs.getString(2);
-                String jenisKelamin = "";
-                if ("L".equals(rs.getString(3))) {
-                    jenisKelamin = "Laki-laki";
-                } else {
-                    jenisKelamin = "Perempuan";
-                }
-                String kelas = rs.getString(4);
-                String email = rs.getString(5);
-                String alamat = rs.getString(6);
-                String data[] = {NIS,namaSiswa,jenisKelamin,kelas,email,alamat};
+                String NIS=rs.getString(1);
+                String NamaSiswa=rs.getString(2);
+                String TempatLahir=rs.getString(3);
+                String TglLahir=rs.getString(4);
+                String JenisKelamin="";
+                if ("L".equals(rs.getString(5))){
+                    {
+                    JenisKelamin="Laki-laki";
+                    }}
+                else{
+                        JenisKelamin="Perempuan";
+                            }
+                String Kelas=rs.getString(6);
+                String Email=rs.getString(7);
+                String Alamat=rs.getString(8);
+                String data[]={NIS,NamaSiswa,TempatLahir,TglLahir,JenisKelamin,Kelas,Email,Alamat};
                 dtm.addRow(data);
             }
         } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+        //Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
         tabel.setModel(dtm);
     }
+    
+    public void setTanggal() {
+       java.util.Date skrg = new java.util.Date();
+       java.text.SimpleDateFormat kal = new
+       java.text.SimpleDateFormat("dd/MM/yyyy");
+       taa.setText(kal.format(skrg));
+    }
+    
+    public void setJam() {
+       ActionListener taskPerformer = new ActionListener(){
+        public void actionPerformed(ActionEvent evt){
+                String nol_jam = "";
+                String nol_menit = "";
+                String nol_detik = "";
+                
+                
+                Date dt = new Date();
+                int nilai_jam = dt.getHours();
+                int nilai_menit = dt.getMinutes();
+                int nilai_detik = dt.getSeconds();
+                
+                if (nilai_jam<=9){
+                    nol_jam = "0";
+                } if (nilai_menit <= 9) {
+                    nol_menit = "0";
+                } if (nilai_detik <= 9){
+                    nol_detik = "0";
+                }
+               
+                
+                String jam = nol_jam + Integer.toString(nilai_jam);
+                String menit = nol_menit + Integer.toString(nilai_menit);
+                String detik = nol_detik + Integer.toString(nilai_detik);
+                labeljam.setText(jam+":"+menit+":"+detik);
+            }
+        };
+    new Timer(100, taskPerformer).start();
 }
+}
+
