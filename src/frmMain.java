@@ -329,6 +329,7 @@ public class frmMain extends javax.swing.JFrame {
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
         // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(this, "Anda yakin Menghapus Data!","",JOptionPane.YES_NO_OPTION);
         int baris = tabel.getSelectedRow();
         if (baris != -1) {
             String NIS = tabel.getValueAt(baris, 0).toString();
@@ -373,34 +374,31 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_printActionPerformed
 
     private void tabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelMouseClicked
+        
         int baris = tabel.getSelectedRow();
+        SimpleDateFormat date = new SimpleDateFormat("yyy-MM-dd");
+        Date dateValue = null;
+         try {
+            dateValue = date.parse((String) tabel.getValueAt(baris, 4));
+        } catch (ParseException ex) {
+            Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      
         if (baris != -1) {
             nonis.setText(tabel.getValueAt(baris, 0).toString());
             nama.setText(tabel.getValueAt(baris, 1).toString());
-            tempat.setText(tabel.getValueAt(baris,2).toString());
-            
-            SimpleDateFormat date = new SimpleDateFormat("yyy-MM-dd");
-            Date dateFormat = null;
-            try {
-                dateFormat = date.parse(tabel.getValueAt(baris,3).toString());
-                
-            } catch(ParseException ex){
-                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE,null,ex);
-            }
-            
-            Tanggal.setDate(dateFormat);
-            String JK = tabel.getValueAt(baris,4).toString();
-            if(JK.equals("Laki-Laki"))
+            if ("Laki-Laki".equals(tabel.getValueAt(baris, 4).toString())) {
                 laki.setSelected(true);
-            else 
-                perempuan.setSelected(true);
-           
+            }else{
+            perempuan.setSelected(true);
+            }
+            Tanggal.setDate(dateValue);
             kelas.setText(tabel.getValueAt(baris, 5).toString());
+            tempat.setText(tabel.getValueAt(baris, 2).toString());
             email.setText(tabel.getValueAt(baris, 6).toString());
             alamat.setText(tabel.getValueAt(baris, 7).toString());
-             
-             
         }
+       
     }//GEN-LAST:event_tabelMouseClicked
 
     private void edit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edit1ActionPerformed
@@ -420,20 +418,20 @@ public class frmMain extends javax.swing.JFrame {
             }
             String SQL ="UPDATE `t_siswa` SET `NIS`='"+nonis.getText()
                     +"',`NamaSiswa`='"+nama.getText()
+                    +"',`TempatLahir`='"+tempat.getText()
+                    +"',`TanggalLahir`='"+tanggal
                     +"',`JenisKelamin`='"+JK
                     +"',`Kelas`='"+kelas.getText()
                     +"',`Email`='"+email.getText()
                     +"',`Alamat`='"+alamat.getText()
-                    +"',`TempatLahir`='"+tempat.getText()
-                    +"',`TanggalLahir`='"+tanggal
                     +"' WHERE NIS='"+nis+"'";
 
             int status = KoneksiDB.execute(SQL);
             if (status == 1) {
-                JOptionPane.showMessageDialog(this,"Data berhasil diUpdate","Sukses", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Data berhasil di Update","Sukses", JOptionPane.INFORMATION_MESSAGE);
                 selectData();
             }else{
-                JOptionPane.showMessageDialog(this,"Data gagal diUpdate","Sukses",JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Data gagal di Update","Sukses",JOptionPane.WARNING_MESSAGE);
             }
         }
     }//GEN-LAST:event_edit1ActionPerformed
@@ -514,7 +512,7 @@ public class frmMain extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void selectData() {
-     String kolom[]={"NIS","NamaSiswa","TempatLahir","TglLahir","JenisKelamin","Kelas","Email","Alamat"};
+     String kolom[]={"NIS","NamaSiswa","TempatLahir","TanggalLahir","JenisKelamin","Kelas","Email","Alamat"};
         DefaultTableModel dtm=new DefaultTableModel(null, kolom);
         String SQL="SELECT * FROM t_siswa";
         ResultSet rs=KoneksiDB.executeQuery(SQL);
@@ -523,7 +521,7 @@ public class frmMain extends javax.swing.JFrame {
                 String NIS=rs.getString(1);
                 String NamaSiswa=rs.getString(2);
                 String TempatLahir=rs.getString(3);
-                String TglLahir=rs.getString(4);
+                String TanggalLahir=rs.getString(4);
                 String JenisKelamin="";
                 if ("L".equals(rs.getString(5))){
                     {
@@ -535,7 +533,7 @@ public class frmMain extends javax.swing.JFrame {
                 String Kelas=rs.getString(6);
                 String Email=rs.getString(7);
                 String Alamat=rs.getString(8);
-                String data[]={NIS,NamaSiswa,TempatLahir,TglLahir,JenisKelamin,Kelas,Email,Alamat};
+                String data[]={NIS,NamaSiswa,TempatLahir,TanggalLahir,JenisKelamin,Kelas,Email,Alamat};
                 dtm.addRow(data);
             }
         } catch (SQLException ex) {
