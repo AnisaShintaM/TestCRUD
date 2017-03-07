@@ -308,7 +308,7 @@ public class frmMain extends javax.swing.JFrame {
         else{
             String JK="";
             if (laki.isSelected()) {
-                JK="L";
+                JK="L";    
             }
             else{
                 JK="P";
